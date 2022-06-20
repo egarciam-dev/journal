@@ -1,7 +1,7 @@
 import { Google } from '@mui/icons-material'
 import { Button, Grid, Link, TextField } from '@mui/material'
-import React from 'react'
-import { useDispatch } from 'react-redux'
+import React, { useMemo } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { Link as RouterLink } from 'react-router-dom'
 import { useForm } from '../../hooks/useForm'
 import { checkingAuthentication, startGoogleSignIn } from '../../store/auth/thunks'
@@ -9,12 +9,16 @@ import { AuthLayout } from '../layout/AuthLayout'
 
 export const LoginPage = () => {
 
+  const { status } = useSelector( state => state.auth );
+
   const dispatch = useDispatch();
 
   const { email, password, onInputChange, formState } = useForm({
     email: 'engel@gmail.com',
     password: 'engel1234',
   });
+
+  const isAuthenticating = useMemo( () => status === 'checking', [status] );
 
   const onSubmit = ( event ) => {
     event.preventDefault();
@@ -62,10 +66,26 @@ export const LoginPage = () => {
 
               <Grid container spacing={ 2 } sx={{ mb: 2}}>
                 <Grid item xs={12} sm={6} md={6}>
-                  <Button type='submit' variant='contained' sx={{ mt: 2 }} onClick={ onSubmit } fullWidth>Login</Button>
+                  <Button 
+                    type='submit' 
+                    variant='contained' 
+                    sx={{ mt: 2 }} 
+                    onClick={ onSubmit } 
+                    fullWidth
+                    disabled={ isAuthenticating }
+                  >
+                    Login
+                  </Button>
                 </Grid>
                 <Grid item xs={12} sm={6} md={6}>
-                  <Button type='submit' onClick={ onGoogleSignIn } variant='contained' sx={{ mt: 2 }} fullWidth>
+                  <Button 
+                    type='submit' 
+                    onClick={ onGoogleSignIn } 
+                    variant='contained' 
+                    sx={{ mt: 2 }} 
+                    fullWidth
+                    disabled={ isAuthenticating }
+                  >
                     <Google sx={{mr: 1}}/> Google
                   </Button>
                 </Grid>
