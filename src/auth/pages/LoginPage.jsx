@@ -4,7 +4,8 @@ import React, { useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link as RouterLink } from 'react-router-dom'
 import { useForm } from '../../hooks/useForm'
-import { checkingAuthentication, startGoogleSignIn } from '../../store/auth/thunks'
+import { chekingCredentials } from '../../store/auth/authSlice'
+import { checkingAuthentication, startGoogleSignIn, startLoginWithPassAndEmail } from '../../store/auth/thunks'
 import { AuthLayout } from '../layout/AuthLayout'
 
 export const LoginPage = () => {
@@ -15,16 +16,14 @@ export const LoginPage = () => {
 
   const { email, password, onInputChange, formState } = useForm({
     email: 'engel@gmail.com',
-    password: 'engel1234',
+    password: '123456',
   });
 
   const isAuthenticating = useMemo( () => status === 'checking', [status] );
 
   const onSubmit = ( event ) => {
     event.preventDefault();
-    dispatch( checkingAuthentication() );
-
-    console.log( { email, password } );
+    dispatch( startLoginWithPassAndEmail({email, password}) );
   };
 
   const onGoogleSignIn = ( event ) => {
